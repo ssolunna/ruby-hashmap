@@ -3,14 +3,20 @@
 require_relative '../lib/hashmap'
 
 describe HashMap do
-  describe '#hash' do
-    subject(:hashmap) { described_class.new }
+  describe '#set' do
+    subject(:set_hashes) { described_class.new }
 
-    it 'returns the hash code of a given string (key)' do
-      hash_code = 9
-      key = 'Manon'
-      result = hashmap.hash(key)
-      expect(result).to eq(hash_code)
+    let(:buckets) { set_hashes.instance_variable_get(:@buckets) }
+    
+    it 'stores a key value pair as a Node item in the corresponding bucket' do
+      key = 'Fred'
+      value = 'abc'
+      hash_code = 11
+
+      set_hashes.set(key, value)
+
+      expect(buckets[hash_code]).to \
+        have_attributes(:key => key, :value => value)
     end
   end
 end

@@ -1,9 +1,19 @@
 # frozen_string_literal: true
 
+require_relative '../lib/node'
+
 class HashMap
   def initialize(initial_size = 16)
     @buckets = Array.new(initial_size)
   end
+
+  def set(key, value)
+    hash_code = hash(key)
+
+    @buckets[hash_code] = Node.new(key, value)
+  end
+
+  private
 
   def hash(key) # key must be of type String
     hash_code = 0

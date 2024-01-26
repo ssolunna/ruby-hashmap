@@ -10,7 +10,13 @@ class HashMap
   def set(key, value)
     hash_code = hash(key)
 
-    @buckets[hash_code] = Node.new(key, value)
+    if @buckets[hash_code].nil?
+      @buckets[hash_code] = Node.new(key, value) # add_node
+    else
+      each(@buckets[hash_code]) do |node|
+        node.value = value if key == node.key
+      end
+    end
   end
 
   private
@@ -22,5 +28,21 @@ class HashMap
     key.each_char { |char| hash_code = prime_number * hash_code + char.ord }
 
     hash_code % @buckets.length
+  end
+
+  def each(bucket)
+    return to_enum(:each) unless block_given?
+
+    node = bucket 
+
+    loop do
+      yield node 
+
+      break if node.next_node.nil?
+
+      node = node.next_node
+    end
+    
+    self
   end
 end

@@ -12,14 +12,26 @@ class HashMap
 
     if @buckets[hash_code].nil?
       @buckets[hash_code] = Node.new(key, value) # add_node
-    else
+    else # overwrites value if key already exists
       each(@buckets[hash_code]) do |node|
         node.value = value if key == node.key
       end
     end
   end
 
+  def get(key)
+    hash_code = hash(key)
+
+    each(buckets(hash_code)) do |node|
+      return node.value if key == node.key
+    end
+  end
+
   private
+
+  def buckets(hash_code)
+    @buckets[hash_code]
+  end
 
   def hash(key) # key must be of type String
     hash_code = 0
@@ -32,6 +44,8 @@ class HashMap
 
   def each(bucket)
     return to_enum(:each) unless block_given?
+
+    return nil if bucket.nil?
 
     node = bucket 
 

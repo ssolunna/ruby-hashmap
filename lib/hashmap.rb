@@ -2,6 +2,7 @@
 
 require_relative '../lib/node'
 
+# Data Structure: Hash Map
 class HashMap
   def initialize(initial_size = 16)
     @buckets = Array.new(initial_size)
@@ -10,11 +11,16 @@ class HashMap
   def set(key, value)
     hash_code = hash(key)
 
-    if @buckets[hash_code].nil?
-      @buckets[hash_code] = Node.new(key, value) # add_node
-    else # overwrites value if key already exists
-      each(@buckets[hash_code]) do |node|
-        node.value = value if key == node.key
+    if empty_bucket?(hash_code)
+      set_linked_list(hash_code, key, value)
+    else
+      each(buckets(hash_code)) do |node|
+        if key == node.key # overwrites old value
+          node.value = value
+          break
+        end
+
+        node.next_node = Node.new(key, value) if node.next_node.nil?
       end
     end
   end
@@ -29,11 +35,20 @@ class HashMap
 
   private
 
+  def empty_bucket?(hash_code)
+    @buckets[hash_code].nil?
+  end
+
+  def set_linked_list(hash_code, key, value)
+    @buckets[hash_code] = Node.new(key, value)
+  end
+
   def buckets(hash_code)
     @buckets[hash_code]
   end
 
-  def hash(key) # key must be of type String
+  # This hash function only works with keys of type Spring
+  def hash(key)
     hash_code = 0
     prime_number = 31
 
@@ -47,16 +62,16 @@ class HashMap
 
     return nil if bucket.nil?
 
-    node = bucket 
+    node = bucket
 
     loop do
-      yield node 
+      yield node
 
       break if node.next_node.nil?
 
       node = node.next_node
     end
-    
+
     self
   end
 end

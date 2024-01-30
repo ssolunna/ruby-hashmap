@@ -33,6 +33,16 @@ class HashMap
     end
   end
 
+  def key?(key)
+    hash_code = hash(key)
+
+    each(buckets(hash_code)) do |node|
+      return true if key == node.key
+    end
+
+    false
+  end
+
   private
 
   def empty_bucket?(hash_code)

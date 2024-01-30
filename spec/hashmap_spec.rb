@@ -90,4 +90,32 @@ describe HashMap do
       end
     end
   end
+
+  describe '#key?' do
+    subject(:key_hashes) { described_class.new }
+    let(:node_one) { double('Node', key: 'a', next_node: node_two) }
+    let(:node_two) { double('Node', key: 'b', next_node: nil) }
+    let(:buckets) { [nil, nil, node_one, nil] }
+
+    before do
+      allow(key_hashes).to receive(:hash).and_return(2)
+      key_hashes.instance_variable_set(:@buckets, buckets)
+    end
+
+    context 'if key exists' do
+      it 'returns true' do
+        result = key_hashes.key?('b')
+
+        expect(result).to eq(true)
+      end
+    end
+
+    context 'if key does not exist' do
+      it 'returns false' do
+        result = key_hashes.key?('c')
+
+        expect(result).to eq(false)
+      end
+    end
+  end
 end

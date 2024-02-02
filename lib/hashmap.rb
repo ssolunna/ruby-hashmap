@@ -43,6 +43,28 @@ class HashMap
     false
   end
 
+  def remove(key)
+    hash_code = hash(key)
+
+    previous_node = nil
+
+    each(buckets(hash_code)) do |node|
+      if key == node.key
+        if previous_node.nil?
+          @buckets[hash_code] = node.next_node
+        else
+          previous_node.next_node = node.next_node
+        end
+
+        return node.value
+      end
+
+      previous_node = node
+    end
+
+    nil
+  end
+
   private
 
   def empty_bucket?(hash_code)

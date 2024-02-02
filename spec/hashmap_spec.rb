@@ -68,7 +68,7 @@ describe HashMap do
       let(:key) { 'Language' }
       let(:hash_code) { '8' }
       let(:value) { 'Ruby' }
-      let(:node) { double('Node', key: key, value: value) }
+      let(:node) { instance_double('Node', key: key, value: value) }
 
       it 'returns its value' do
         allow(get_hashes).to receive(:hash).and_return(hash_code)
@@ -93,12 +93,13 @@ describe HashMap do
 
   describe '#key?' do
     subject(:key_hashes) { described_class.new }
-    let(:node_one) { double('Node', key: 'a', next_node: node_two) }
-    let(:node_two) { double('Node', key: 'b', next_node: nil) }
+    let(:node_one) { instance_double('Node', key: 'a', next_node: node_two) }
+    let(:node_two) { instance_double('Node', key: 'b', next_node: nil) }
     let(:buckets) { [nil, nil, node_one, nil] }
+    let(:hash_code) { 2 }
 
     before do
-      allow(key_hashes).to receive(:hash).and_return(2)
+      allow(key_hashes).to receive(:hash).and_return(hash_code)
       key_hashes.instance_variable_set(:@buckets, buckets)
     end
 
@@ -115,6 +116,58 @@ describe HashMap do
         result = key_hashes.key?('c')
 
         expect(result).to eq(false)
+      end
+    end
+  end
+
+  describe '#remove' do
+    subject(:remove_hash_entry) { described_class.new }
+    let(:node_one) { instance_double('Node', key: 'x', value: '1', next_node: node_two) }
+    let(:node_two) { instance_double('Node', key: 'y', value: '2', next_node: nil) }
+    let(:node_zero) { instance_double('Node', key: 'z', value: '3', next_node: node_two) }
+    let(:buckets) { [node_zero, node_one, nil, nil] }
+
+    before do
+      remove_hash_entry.instance_variable_set(:@buckets, buckets)
+      allow(remove_hash_entry).to receive(:hash).and_return(hash_code)
+      allow(node_one).to receive(:next_node=)
+    end
+
+    context 'if key exists' do
+      let(:hash_code) { 1 }
+      let(:key) { node_two.key }
+      let(:value) { node_two.value }
+
+      it "returns the deleted key's value" do
+        expect(remove_hash_entry.remove(key)).to eq(value)
+      end
+
+      context 'when a node precedes the key' do
+        it "removes key's entry by assigning key's next_node to node's next_node" do
+          expect(node_one).to receive(:next_node=).with(node_two.next_node)
+          remove_hash_entry.remove(key)
+        end
+      end
+
+      context 'when the key is the head of a linked list' do
+        let(:hash_code) { 0 }
+        let(:key) { node_zero.key }
+
+        it "removes key's entry by assigning key's next_node as the head" do
+          expect { remove_hash_entry.remove(key) }.to \
+            change { buckets[hash_code] }
+            .from(node_zero)
+            .to(node_zero.next_node)
+        end
+      end
+    end
+
+    context 'if key does not exist' do
+      let(:hash_code) { 1 }
+      let(:key) { 'void' }
+
+      it 'returns nil' do
+        expect(remove_hash_entry.remove(key)).to eq(nil)
       end
     end
   end

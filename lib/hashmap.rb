@@ -89,19 +89,21 @@ class HashMap
     hash_code % @buckets.length
   end
 
-  def each(bucket)
+  def each(bucket = @buckets)
     return to_enum(:each) unless block_given?
 
-    return nil if bucket.nil?
+    bucket = [*bucket]
 
-    node = bucket
+    return nil if bucket.compact.empty?
 
-    loop do
-      yield node
+    bucket.each do |node|
+      loop do
+        break if node.nil?
 
-      break if node.next_node.nil?
+        yield node
 
-      node = node.next_node
+        node = node.next_node
+      end
     end
 
     self

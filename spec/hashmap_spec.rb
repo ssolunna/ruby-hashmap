@@ -171,4 +171,46 @@ describe HashMap do
       end
     end
   end
+
+  describe '#length' do
+    subject(:hash_length) { described_class.new }
+    let(:node_node) { instance_double('Node', key: 1, value: 2, next_node: node) }
+    let(:node) { instance_double('Node', key: 2, value: 1, next_node: nil) }
+
+    context 'when hash map has 3 stored keys' do
+      let(:buckets_three) { [node, node, nil, node] }
+
+      it 'returns 3' do
+        hash_length.instance_variable_set(:@buckets, buckets_three)
+
+        result = hash_length.length
+
+        expect(result).to eq(3)
+      end
+    end
+
+    context 'when hash map has 10 stored keys' do
+      let(:buckets_ten) { [node_node, node_node, node, node, nil, node_node, node, nil, node] }
+
+      it 'returns 10' do
+        hash_length.instance_variable_set(:@buckets, buckets_ten)
+
+        result = hash_length.length
+
+        expect(result).to eq(10)
+      end
+    end
+
+    context 'when hash map does not have keys stored' do
+      let(:buckets_zero) { [nil, nil, nil, nil, nil] }
+
+      it 'returns 0' do
+        hash_length.instance_variable_set(:@buckets, buckets_zero)
+
+        result = hash_length.length
+
+        expect(result).to eq(0)
+      end
+    end
+  end
 end

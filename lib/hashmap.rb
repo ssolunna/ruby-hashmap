@@ -65,6 +65,14 @@ class HashMap
     nil
   end
 
+  def length
+    size = 0
+
+    each { |_node| size += 1 }
+
+    size
+  end
+
   private
 
   def empty_bucket?(hash_code)

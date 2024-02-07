@@ -88,6 +88,16 @@ class HashMap
     array_of_keys
   end
 
+  def values
+    array_of_values = []
+
+    each do |node|
+      array_of_values << node.value
+    end
+
+    array_of_values
+  end
+
   private
 
   def empty_bucket?(hash_code)

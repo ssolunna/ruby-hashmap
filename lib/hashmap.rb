@@ -98,6 +98,16 @@ class HashMap
     array_of_values
   end
 
+  def entries
+    array_of_entries = []
+
+    each do |node|
+      array_of_entries << [node.key, node.value]
+    end
+
+    array_of_entries
+  end
+
   private
 
   def empty_bucket?(hash_code)

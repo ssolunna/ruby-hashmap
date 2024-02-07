@@ -269,4 +269,21 @@ describe HashMap do
       expect(result).to match_array(array_of_values)
     end
   end
+
+  describe '#entries' do
+    subject(:hash_entries) { described_class.new }
+
+    let(:node_node) { instance_double('Node', key: 1, value: 'a', next_node: node) }
+    let(:node) { instance_double('Node', key: 2, value: 'b', next_node: nil) }
+    let(:buckets) { [node, node, nil, node_node] }
+    let(:array_of_entries) { [[2, 'b'], [2, 'b'], [1, 'a'], [2, 'b']] }
+
+    it 'returns an array containing all entries inside a hash map' do
+      hash_entries.instance_variable_set(:@buckets, buckets)
+      result = hash_entries.entries
+
+      expect(result).to be_an(Array)
+      expect(result).to match_array(array_of_entries)
+    end
+  end
 end

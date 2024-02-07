@@ -5,6 +5,7 @@ require_relative '../lib/node'
 # Data Structure: Hash Map
 class HashMap
   def initialize(initial_size = 16)
+    @initial_size = initial_size
     @buckets = Array.new(initial_size)
   end
 
@@ -71,6 +72,10 @@ class HashMap
     each { |_node| size += 1 }
 
     size
+  end
+
+  def clear!
+    @buckets = Array.new(@initial_size)
   end
 
   private

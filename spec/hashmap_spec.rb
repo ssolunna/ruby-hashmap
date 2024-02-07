@@ -213,4 +213,26 @@ describe HashMap do
       end
     end
   end
+
+  describe '#clear!' do
+    subject(:clear_hash) { described_class.new }
+
+    let(:buckets) { clear_hash.instance_variable_get(:@buckets) }
+    let(:initial_size) { clear_hash.instance_variable_get(:@initial_size) }
+    let(:node) { instance_double('Node') }
+    let(:loaded_hash) { [node, node, node, nil, nil] }
+
+    before do
+      clear_hash.instance_variable_set(:@buckets, loaded_hash)
+      clear_hash.clear!
+    end
+
+    it 'removes all entries in the hash map' do
+      expect(buckets.compact.empty?).to eq(true)
+    end
+
+    it 'resets hash map to initial size' do
+      expect(buckets.size).to eq(initial_size)
+    end
+  end
 end

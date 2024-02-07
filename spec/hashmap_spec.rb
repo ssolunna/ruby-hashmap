@@ -235,4 +235,21 @@ describe HashMap do
       expect(buckets.size).to eq(initial_size)
     end
   end
+
+  describe '#keys' do
+    subject(:hash_keys) { described_class.new }
+
+    let(:node_node) { instance_double('Node', key: 1, next_node: node) }
+    let(:node) { instance_double('Node', key: 2, next_node: nil) }
+    let(:buckets) { [node_node, node, nil, node] }
+    let(:array_of_keys) { [1, 2, 2, 2] }
+
+    it 'returns an array containing all the keys inside a hash map' do
+      hash_keys.instance_variable_set(:@buckets, buckets)
+      result = hash_keys.keys
+
+      expect(result).to be_an(Array)
+      expect(result).to match_array(array_of_keys)
+    end
+  end
 end

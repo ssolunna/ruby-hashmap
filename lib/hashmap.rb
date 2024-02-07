@@ -78,6 +78,16 @@ class HashMap
     @buckets = Array.new(@initial_size)
   end
 
+  def keys
+    array_of_keys = []
+
+    each do |node|
+      array_of_keys << node.key
+    end
+
+    array_of_keys
+  end
+
   private
 
   def empty_bucket?(hash_code)

@@ -59,6 +59,39 @@ describe HashMap do
           .to(new_value)
       end
     end
+
+    context 'when the total of buckets reaches a threshold' do
+      let(:node) { instance_double('Node') }
+
+      let(:key) { 'Project' }
+      let(:value) { 'Odin' }
+
+      before do
+        allow(set_hashes).to receive(:hash)
+        allow(set_hashes).to receive(:empty_bucket?).and_return(true)
+        allow(set_hashes).to receive(:set_linked_list)
+        allow(set_hashes).to receive(:capacity_full?).and_return(true)
+      end
+
+      it 'copies all nodes over to the new buckets list' do
+        old_buckets_list = [node, node, nil]
+        set_hashes.instance_variable_set(:@buckets, old_buckets_list)
+
+        set_hashes.set(key, value)
+
+        expect(buckets).to start_with(old_buckets_list)
+      end
+
+      it 'doubles the size of the buckets list' do
+        old_buckets_list = [node, node, nil]
+        doubled_size = old_buckets_list.size * 2
+        set_hashes.instance_variable_set(:@buckets, old_buckets_list)
+
+        set_hashes.set(key, value)
+
+        expect(buckets.size).to eq(doubled_size)
+      end
+    end
   end
 
   describe '#get' do

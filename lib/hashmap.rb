@@ -4,12 +4,15 @@ require_relative '../lib/node'
 
 # Data Structure: Hash Map
 class HashMap
-  def initialize(initial_size = 16)
+  def initialize(initial_size = 16, load_factor = 0.75)
     @initial_size = initial_size
     @buckets = Array.new(initial_size)
+    @load_factor = load_factor
   end
 
   def set(key, value)
+    grow_buckets_list if capacity_full?(@load_factor)
+
     hash_code = hash(key)
 
     if empty_bucket?(hash_code)
@@ -109,6 +112,14 @@ class HashMap
   end
 
   private
+
+  def grow_buckets_list
+    @buckets.fill(nil, @buckets.length * 2, 0)
+  end
+
+  def capacity_full?(threshold)
+    (@buckets.compact.length / @buckets.length.to_f) >= threshold
+  end
 
   def empty_bucket?(hash_code)
     @buckets[hash_code].nil?
